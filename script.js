@@ -49,10 +49,16 @@ var contacts = [{
         "phones": ["380957899632"]
     }
 ];
-
-
-
+/*return user info version with Array.reduce()*/
 function getUsersInfo(parsedJSON) {
+    let result = parsedJSON.reduce((previous, current) => {
+        return previous.set(Object.values(current).shift(), Object.values(current).slice(1))
+    }, new Map())
+    return result;
+}
+
+/*return user info version 1 */
+function getUsersInfoV2(parsedJSON) {
     let result = new Map();
     parsedJSON.forEach(element => {
         let info = {
@@ -64,10 +70,9 @@ function getUsersInfo(parsedJSON) {
     return result;
 }
 
-
-function getUniqValue(parsedJSON, property, sliceN) {
+/* return uniq value version1*/
+function getUniqValueV2(parsedJSON, property, sliceN) {
     let result = new Set();
-
     parsedJSON.forEach(element => {
         element[property].forEach(el => {
             let code = el.slice(0, sliceN);
@@ -77,17 +82,29 @@ function getUniqValue(parsedJSON, property, sliceN) {
     return result;
 }
 
+
+/*return uniq value version with Array.reduce()*/
+function getUniqValue(parsedJSON, property, sliceN) {
+    let result = parsedJSON.reduce((previous, current) => {
+        current[property].forEach(el => 
+            previous.add(el.slice(0, sliceN)));
+        return previous;
+    }, new Set());
+    return result;
+}
+
+
+/* return object with code operator: {<user><user><user>}*/
 function getCodeOperator(parsedJSON, sliceN) {
     let result = new Object();
     let uniq = getUniqValue(parsedJSON, "phones", sliceN);
-    
     uniq.forEach(uNum => {
         let temp = parsedJSON.filter(el => {
             let bool = el.phones.some(num => {
                 let code = num.slice(0, sliceN);
                 return code == uNum;
             });
-            if(bool) return el
+            if (bool) return el
         });
         result[uNum] = temp;
     });
@@ -95,6 +112,6 @@ function getCodeOperator(parsedJSON, sliceN) {
     return result
 }
 
-console.log(getUsersInfo(contacts));
+//console.log(getUsersInfo(contacts));
 console.log(getUniqValue(contacts, "brand"));
-console.log(getCodeOperator(contacts, 5));
+//console.log(getCodeOperator(contacts, 5));
