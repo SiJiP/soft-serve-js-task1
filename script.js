@@ -86,7 +86,7 @@ function getUniqValueV2(parsedJSON, property, sliceN) {
 /*return uniq value version with Array.reduce()*/
 function getUniqValue(parsedJSON, property, sliceN) {
     let result = parsedJSON.reduce((previous, current) => {
-        current[property].forEach(el => 
+        current[property].forEach(el =>
             previous.add(el.slice(0, sliceN)));
         return previous;
     }, new Set());
@@ -112,6 +112,22 @@ function getCodeOperator(parsedJSON, sliceN) {
     return result
 }
 
-//console.log(getUsersInfo(contacts));
+
+/*first version */
+function getUserByPhoneNumber(numStr, parsedJSON) {
+    return parsedJSON.reduce((previous, current)=>{
+        return (current.phones.some(i => i.includes(numStr))) ? {...previous, [current.user]: current} : {...previous}
+    }, {});
+}
+
+/*uniq cars with spread */
+function getUniqCars(parsedJSON){
+    let result =  parsedJSON.reduce((previous, current) => [...previous, ...current.brand], [])
+    return new Set(result);
+}
+
+console.log(getUsersInfo(contacts));
 console.log(getUniqValue(contacts, "brand"));
-//console.log(getCodeOperator(contacts, 5));
+console.log(getCodeOperator(contacts, 5));
+console.log(getUserByPhoneNumber("099", contacts));
+console.log(getUniqCars(contacts));
